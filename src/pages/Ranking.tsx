@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getRankingAll, getRankingBySchool } from '../api';
+import { getRankingAll, getRankingBySchool, validateSchool } from '../api';
 import { Button } from '../components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
@@ -29,8 +29,7 @@ const Ranking: React.FC = () => {
     setSchoolResults([]);
     setSelectedSchool('');
     if (!schoolSearch) return;
-    const res = await fetch(`/api/school/search?name=${encodeURIComponent(schoolSearch)}`);
-    const data = await res.json();
+    const data = await validateSchool(schoolSearch);
     if (data.length === 0) {
       setSchoolResults([]);
       setSchoolError('해당 학교의 데이터는 없습니다.');
@@ -159,5 +158,3 @@ const Ranking: React.FC = () => {
     </div>
   );
 };
-
-export default Ranking;

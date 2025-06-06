@@ -111,5 +111,3 @@ const EnterInfo: React.FC = () => {
     </div>
   );
 };
-
-export default EnterInfo;
