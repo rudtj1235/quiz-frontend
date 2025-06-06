@@ -79,7 +79,7 @@ const EnterInfo: React.FC = () => {
               onChange={e => setSchool(e.target.value)}
               onKeyDown={handleSchoolInputKeyDown}
             />
-            <Button type="button" onClick={handleSchoolSearch}>확인</Button>
+            <Button type="button" onClick={handleSchoolSearch} style={{color: 'black'}}>확인</Button>
           </div>
           <Input
             type="text"
@@ -99,7 +99,7 @@ const EnterInfo: React.FC = () => {
               {searchResults.length === 0 ? (
                 <div className="text-center text-red-500 mb-4">해당하는 학교가 없습니다. 학교명을 확인해 주세요.</div>
               ) : (
-                <ul className="mb-4">
+                <ul className="mb-4 max-h-60 overflow-y-auto">
                   {searchResults.map((s, i) => (
                     <li key={i} className="mb-2">
                       <Button onClick={() => handleSelectSchool(s)} className="w-full border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>{s}</Button>
