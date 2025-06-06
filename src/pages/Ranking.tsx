@@ -131,8 +131,9 @@ const Ranking: React.FC = () => {
                 <th className="px-2 py-1">순위</th>
                 <th className="px-2 py-1">학교</th>
                 <th className="px-2 py-1">닉네임(IP)</th>
-                <th className="px-2 py-1">점수</th>
+                <th className="px-2 py-1">맞은 개수</th>
                 <th className="px-2 py-1">시간(초)</th>
+                <th className="px-2 py-1">점수</th>
               </tr>
             </thead>
             <tbody>
@@ -141,8 +142,9 @@ const Ranking: React.FC = () => {
                   <td className="px-2 py-1 text-center">{i + 1}</td>
                   <td className="px-2 py-1">{u.school}</td>
                   <td className="px-2 py-1">{u.nickname}{u.ip ? ` (${getIpPrefix(u.ip)})` : ''}</td>
-                  <td className="px-2 py-1 text-center">{Number(u.score).toFixed(1)}</td>
+                  <td className="px-2 py-1 text-center">{u.totalCorrect ?? '-'}</td>
                   <td className="px-2 py-1 text-center">{(u.time / 1000).toFixed(2)}</td>
+                  <td className="px-2 py-1 text-center">{Number(u.score).toFixed(1)}</td>
                 </tr>
               ))}
             </tbody>
@@ -158,8 +160,9 @@ const Ranking: React.FC = () => {
                   <td className="px-2 py-1 text-center">{myRank.rank}</td>
                   <td className="px-2 py-1">{myRank.school}</td>
                   <td className="px-2 py-1">{myRank.nickname}{myRank.ip ? ` (${getIpPrefix(myRank.ip)})` : ''}</td>
-                  <td className="px-2 py-1 text-center">{Number(myRank.score).toFixed(1)}</td>
+                  <td className="px-2 py-1 text-center">{myRank.totalCorrect ?? '-'}</td>
                   <td className="px-2 py-1 text-center">{(myRank.time / 1000).toFixed(2)}</td>
+                  <td className="px-2 py-1 text-center">{Number(myRank.score).toFixed(1)}</td>
                 </tr>
               </tbody>
             </table>
@@ -167,9 +170,14 @@ const Ranking: React.FC = () => {
         )}
         {/* 조건부 버튼 렌더링 */}
         {userId ? (
-          <Button onClick={() => navigate('/quiz')} className="w-full mt-4 !text-black border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>
-            문제 다시 풀기
-          </Button>
+          <div className="flex gap-2 w-full mt-4">
+            <Button onClick={() => navigate('/quiz')} className="w-full !text-black border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>
+              재도전
+            </Button>
+            <Button onClick={() => navigate('/operation-select')} className="w-full !text-black border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>
+              곱셈/덧셈 선택 창
+            </Button>
+          </div>
         ) : (
           <Button onClick={() => navigate('/')} className="w-full mt-4 !text-black border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>
             문제 풀기
