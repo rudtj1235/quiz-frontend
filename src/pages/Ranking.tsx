@@ -66,7 +66,16 @@ const Ranking: React.FC = () => {
             </tbody>
           </table>
         </div>
-        <Button onClick={() => navigate('/quiz')} className="w-full mt-4 !text-black border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>문제 다시 풀기</Button>
+        {/* 조건부 버튼 렌더링 */}
+        {userId ? (
+          <Button onClick={() => navigate('/quiz')} className="w-full mt-4 !text-black border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>
+            문제 다시 풀기
+          </Button>
+        ) : (
+          <Button onClick={() => navigate('/')} className="w-full mt-4 !text-black border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>
+            문제 풀기
+          </Button>
+        )}
       </div>
     </div>
   );
