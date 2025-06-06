@@ -80,6 +80,16 @@ const Ranking: React.FC = () => {
             <span className="ml-2 text-black">{school}</span>
           )}
         </div>
+        {/* 내 최근 결과 표시 */}
+        {userId && users.length > 0 && (() => {
+          const me = users.find(u => u._id === userId);
+          if (!me) return null;
+          return (
+            <div className="w-full mb-2 p-2 bg-yellow-50 rounded text-black text-center font-semibold">
+              {me.nickname}{me.ip ? `(${getIpPrefix(me.ip)})` : ''}님의 결과: 맞은 개수: {me.totalCorrect ?? '-'}, 시간(초): {(me.time / 1000).toFixed(2)}, 점수: {Number(me.score).toFixed(1)}
+            </div>
+          );
+        })()}
         {/* 학교 검색 모달 */}
         {showSchoolModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
@@ -168,16 +178,6 @@ const Ranking: React.FC = () => {
             </table>
           </div>
         )}
-        {/* 내 최근 결과 표시 */}
-        {userId && users.length > 0 && (() => {
-          const me = users.find(u => u._id === userId);
-          if (!me) return null;
-          return (
-            <div className="w-full mb-2 p-2 bg-yellow-50 rounded text-black text-center font-semibold">
-              {me.nickname}{me.ip ? `(${getIpPrefix(me.ip)})` : ''}님의 결과: 맞은 개수: {me.totalCorrect ?? '-'}, 시간(초): {(me.time / 1000).toFixed(2)}, 점수: {Number(me.score).toFixed(1)}
-            </div>
-          );
-        })()}
         {/* 조건부 버튼 렌더링 */}
         {userId ? (
           <div className="flex gap-2 w-full mt-4">
