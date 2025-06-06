@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
+import { getUserInfo } from '../api';
 
 const Result: React.FC = () => {
   const score = localStorage.getItem('score');
@@ -12,14 +13,12 @@ const Result: React.FC = () => {
 
   React.useEffect(() => {
     // 결과 페이지 진입 시 사용자 정보 갱신(도전 횟수, 평균 점수)
-    fetch(`http://localhost:5000/api/user/info/${localStorage.getItem('userId')}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.user) {
-          localStorage.setItem('attempts', data.user.attempts);
-          localStorage.setItem('averageScore', data.user.averageScore);
-        }
-      });
+    getUserInfo(localStorage.getItem('userId')).then(data => {
+      if (data.user) {
+        localStorage.setItem('attempts', data.user.attempts);
+        localStorage.setItem('averageScore', data.user.averageScore);
+      }
+    });
   }, []);
 
   return (

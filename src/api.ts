@@ -33,3 +33,8 @@ export async function getRankingBySchool(school: string) {
   const res = await fetch(`${API_URL}/ranking/school?school=${encodeURIComponent(school)}`);
   return res.json();
 }
+
+export async function getUserInfo(userId: string | null) {
+  const res = await fetch(`${API_URL}/user/info/${userId}`);
+  return res.json();
+}

@@ -19,13 +19,9 @@ const Ranking: React.FC = () => {
 
   useEffect(() => {
     if (filter === 'all') {
-      fetch(`http://localhost:5000/api/ranking/all?userId=${userId}`)
-        .then(res => res.json())
-        .then(res => setUsers(res.users));
+      getRankingAll().then(res => setUsers(res.users));
     } else {
-      fetch(`http://localhost:5000/api/ranking/school?school=${encodeURIComponent(school)}&userId=${userId}`)
-        .then(res => res.json())
-        .then(res => setUsers(res.users));
+      getRankingBySchool(school).then(res => setUsers(res.users));
     }
   }, [filter, school, userId]);
 
