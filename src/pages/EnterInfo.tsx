@@ -57,7 +57,7 @@ const EnterInfo: React.FC = () => {
     if (res.user && res.user._id) {
       localStorage.setItem('userId', res.user._id);
       localStorage.setItem('school', selectedSchool);
-      navigate('/quiz');
+      navigate('/operation-select');
     } else {
       setError(res.message || '등록 실패');
     }

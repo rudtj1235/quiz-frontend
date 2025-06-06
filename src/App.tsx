@@ -4,6 +4,7 @@ import EnterInfo from './pages/EnterInfo';
 import Quiz from './pages/Quiz';
 import Result from './pages/Result';
 import Ranking from './pages/Ranking';
+import OperationSelect from './pages/OperationSelect';
 
 const App: React.FC = () => {
   return (
@@ -13,6 +14,7 @@ const App: React.FC = () => {
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/result" element={<Result />} />
         <Route path="/ranking" element={<Ranking />} />
+        <Route path="/operation-select" element={<OperationSelect />} />
       </Routes>
     </Router>
   );

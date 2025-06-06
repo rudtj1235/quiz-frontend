@@ -15,11 +15,11 @@ export async function generateQuiz() {
   return res.json();
 }
 
-export async function submitQuiz(userId: string, questions: any[], totalTime: number) {
+export async function submitQuiz(userId: string, questions: any[], totalTime: number, operation: string) {
   const res = await fetch(`${API_URL}/quiz/submit`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, questions, totalTime })
+    body: JSON.stringify({ userId, questions, totalTime, operation })
   });
   return res.json();
 }

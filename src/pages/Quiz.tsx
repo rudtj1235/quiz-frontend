@@ -20,11 +20,37 @@ const Quiz: React.FC = () => {
   const [input, setInput] = useState('');
   const navigate = useNavigate();
 
+  const generateAdditionQuiz = () => {
+    const questions = [];
+    for (let i = 0; i < 5; i++) {
+      const left = Math.floor(Math.random() * 900) + 100; // 100~999 (3자리)
+      const right = Math.floor(Math.random() * 900) + 100; // 100~999 (3자리)
+      // 2~3자리수로 제한
+      const leftVal = Math.random() < 0.5 ? left : Math.floor(left / 10); // 2자리 또는 3자리
+      const rightVal = Math.random() < 0.5 ? right : Math.floor(right / 10); // 2자리 또는 3자리
+      questions.push({ left: leftVal, right: rightVal, answer: leftVal + rightVal });
+    }
+    return questions;
+  };
+
+  const generateMultiplicationQuiz = () => {
+    const questions = [];
+    for (let i = 0; i < 5; i++) {
+      const left = Math.floor(Math.random() * 90) + 10; // 10~99 (2자리)
+      const right = Math.floor(Math.random() * 9) + 1; // 1~9 (1자리)
+      questions.push({ left, right, answer: left * right });
+    }
+    return questions;
+  };
+
   useEffect(() => {
-    generateQuiz().then(res => {
-      setQuestions(res.questions);
-      setStartTime(Date.now());
-    });
+    const op = localStorage.getItem('operation') || 'addition';
+    if (op === 'addition') {
+      setQuestions(generateAdditionQuiz());
+    } else {
+      setQuestions(generateMultiplicationQuiz());
+    }
+    setStartTime(Date.now());
   }, []);
 
   const handleAnswer = () => {
@@ -44,7 +70,8 @@ const Quiz: React.FC = () => {
     const userId = localStorage.getItem('userId') || '';
     const solved = questions.map((q, i) => ({ ...q, userAnswer: finalAnswers[i] }));
     const totalTime = (endTime || Date.now()) - startTime;
-    const res = await submitQuiz(userId, solved, totalTime);
+    const operation = localStorage.getItem('operation') || 'addition';
+    const res = await submitQuiz(userId, solved, totalTime, operation);
     localStorage.setItem('score', res.score);
     localStorage.setItem('totalCorrect', res.totalCorrect);
     localStorage.setItem('totalTime', totalTime.toString());

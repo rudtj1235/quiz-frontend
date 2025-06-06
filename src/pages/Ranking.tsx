@@ -36,6 +36,7 @@ const Ranking: React.FC = () => {
     } else {
       setSchoolResults(data);
     }
+    setShowSchoolModal(false);
   };
 
   // 학교 선택
@@ -82,16 +83,26 @@ const Ranking: React.FC = () => {
         {showSchoolModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
             <div className="bg-white p-6 rounded shadow-md w-full max-w-xs">
-              <input
-                type="text"
-                value={schoolSearch}
-                onChange={e => setSchoolSearch(e.target.value)}
-                placeholder="학교명 입력"
-                className="border rounded px-2 py-1 ml-2 text-black w-full mb-2"
-                onKeyDown={e => { if (e.key === 'Enter') handleSchoolSearch(); }}
-              />
-              <Button onClick={handleSchoolSearch} className="w-full mb-2 border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>확인</Button>
-              {schoolError && <div className="text-red-500 text-center mb-2">{schoolError}</div>}
+              <div className="flex gap-2 mb-2">
+                <input
+                  type="text"
+                  value={schoolSearch}
+                  onChange={e => setSchoolSearch(e.target.value)}
+                  placeholder="학교명 입력"
+                  className="border rounded px-2 py-1 text-black w-full"
+                  onKeyDown={e => { if (e.key === 'Enter') handleSchoolSearch(); }}
+                />
+                <Button onClick={handleSchoolSearch} className="border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black', minWidth: '60px'}}>확인</Button>
+              </div>
+              <Button onClick={() => setShowSchoolModal(false)} className="w-full border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>닫기</Button>
+            </div>
+          </div>
+        )}
+        {/* 학교 검색 결과 모달 */}
+        {schoolResults.length > 0 && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
+            <div className="bg-white p-6 rounded shadow-md w-full max-w-xs">
+              <div className="font-bold mb-2 text-center">학교를 선택하세요</div>
               <ul className="mb-4 max-h-60 overflow-y-auto">
                 {schoolResults.map((s, i) => (
                   <li key={i} className="mb-2">
@@ -99,7 +110,16 @@ const Ranking: React.FC = () => {
                   </li>
                 ))}
               </ul>
-              <Button onClick={() => setShowSchoolModal(false)} className="w-full border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>닫기</Button>
+              <Button onClick={() => setSchoolResults([])} className="w-full border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>닫기</Button>
+            </div>
+          </div>
+        )}
+        {/* 학교 검색 에러 모달 */}
+        {schoolError && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
+            <div className="bg-white p-6 rounded shadow-md w-full max-w-xs">
+              <div className="text-red-500 text-center mb-4">{schoolError}</div>
+              <Button onClick={() => setSchoolError('')} className="w-full border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>닫기</Button>
             </div>
           </div>
         )}
