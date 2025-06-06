@@ -158,3 +158,4 @@ const Ranking: React.FC = () => {
     </div>
   );
 };
+export default Ranking;
