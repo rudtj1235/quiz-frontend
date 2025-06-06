@@ -14,34 +14,96 @@ const Ranking: React.FC = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [school, setSchool] = useState(localStorage.getItem('school') || '');
   const [filter, setFilter] = useState('all');
+  const [showSchoolModal, setShowSchoolModal] = useState(false);
+  const [schoolSearch, setSchoolSearch] = useState('');
+  const [schoolResults, setSchoolResults] = useState<string[]>([]);
+  const [selectedSchool, setSelectedSchool] = useState('');
+  const [schoolError, setSchoolError] = useState('');
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId') || '';
+  const [myRank, setMyRank] = useState<any>(null);
+
+  // 학교명 검색 함수
+  const handleSchoolSearch = async () => {
+    setSchoolError('');
+    setSchoolResults([]);
+    setSelectedSchool('');
+    if (!schoolSearch) return;
+    const res = await fetch(`/api/school/search?name=${encodeURIComponent(schoolSearch)}`);
+    const data = await res.json();
+    if (data.length === 0) {
+      setSchoolResults([]);
+      setSchoolError('해당 학교의 데이터는 없습니다.');
+    } else {
+      setSchoolResults(data);
+    }
+  };
+
+  // 학교 선택
+  const handleSelectSchool = (schoolName: string) => {
+    setSelectedSchool(schoolName);
+    setSchool(schoolName);
+    setShowSchoolModal(false);
+    setSchoolError('');
+    setFilter('school');
+  };
 
   useEffect(() => {
     if (filter === 'all') {
       getRankingAll().then(res => setUsers(res.users));
-    } else {
+    } else if (filter === 'school' && school) {
       getRankingBySchool(school).then(res => setUsers(res.users));
     }
   }, [filter, school, userId]);
 
+  useEffect(() => {
+    // 내 순위 찾기
+    if (users && userId) {
+      const idx = users.findIndex(u => u._id === userId);
+      if (idx !== -1) {
+        setMyRank({ ...users[idx], rank: idx + 1 });
+      } else {
+        setMyRank(null);
+      }
+    }
+  }, [users, userId]);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-2xl flex flex-col gap-4 items-center">
-        <h2 className="text-2xl font-bold mb-4 text-black">실시간 랭킹보드</h2>
+        <h2 className="text-2xl font-bold mb-4 text-black">랭킹! 나의 순위는?</h2>
         <div className="flex gap-2 mb-2">
           <Button onClick={() => setFilter('all')} className="!text-black border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>전체</Button>
-          <Button onClick={() => setFilter('school')} className="!text-black border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>학교별</Button>
+          <Button onClick={() => setShowSchoolModal(true)} className="!text-black border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>학교별</Button>
           {filter === 'school' && (
-            <input
-              type="text"
-              value={school}
-              onChange={e => setSchool(e.target.value)}
-              placeholder="학교명 입력"
-              className="border rounded px-2 py-1 ml-2 text-black"
-            />
+            <span className="ml-2 text-black">{school}</span>
           )}
         </div>
+        {/* 학교 검색 모달 */}
+        {showSchoolModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
+            <div className="bg-white p-6 rounded shadow-md w-full max-w-xs">
+              <input
+                type="text"
+                value={schoolSearch}
+                onChange={e => setSchoolSearch(e.target.value)}
+                placeholder="학교명 입력"
+                className="border rounded px-2 py-1 ml-2 text-black w-full mb-2"
+                onKeyDown={e => { if (e.key === 'Enter') handleSchoolSearch(); }}
+              />
+              <Button onClick={handleSchoolSearch} className="w-full mb-2 border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>확인</Button>
+              {schoolError && <div className="text-red-500 text-center mb-2">{schoolError}</div>}
+              <ul className="mb-4 max-h-60 overflow-y-auto">
+                {schoolResults.map((s, i) => (
+                  <li key={i} className="mb-2">
+                    <Button onClick={() => handleSelectSchool(s)} className="w-full border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>{s}</Button>
+                  </li>
+                ))}
+              </ul>
+              <Button onClick={() => setShowSchoolModal(false)} className="w-full border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>닫기</Button>
+            </div>
+          </div>
+        )}
         <div className="overflow-x-auto w-full">
           <table className="min-w-full border text-sm text-black">
             <thead>
@@ -54,7 +116,7 @@ const Ranking: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {users.map((u, i) => (
+              {users.slice(0, 10).map((u, i) => (
                 <tr key={u._id} className={u._id === userId ? 'font-bold bg-yellow-50' : ''}>
                   <td className="px-2 py-1 text-center">{i + 1}</td>
                   <td className="px-2 py-1">{u.school}</td>
@@ -66,6 +128,23 @@ const Ranking: React.FC = () => {
             </tbody>
           </table>
         </div>
+        {/* 내 순위 별도 표시 */}
+        {myRank && myRank.rank > 10 && (
+          <div className="w-full mt-4 p-4 border-t border-gray-300">
+            <div className="font-bold mb-2">내 순위</div>
+            <table className="min-w-full border text-sm text-black">
+              <tbody>
+                <tr className="font-bold bg-yellow-50">
+                  <td className="px-2 py-1 text-center">{myRank.rank}</td>
+                  <td className="px-2 py-1">{myRank.school}</td>
+                  <td className="px-2 py-1">{myRank.nickname}{myRank.ip ? ` (${getIpPrefix(myRank.ip)})` : ''}</td>
+                  <td className="px-2 py-1 text-center">{myRank.score}</td>
+                  <td className="px-2 py-1 text-center">{(myRank.time / 1000).toFixed(2)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        )}
         {/* 조건부 버튼 렌더링 */}
         {userId ? (
           <Button onClick={() => navigate('/quiz')} className="w-full mt-4 !text-black border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}}>

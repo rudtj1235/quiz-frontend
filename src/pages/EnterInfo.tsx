@@ -63,9 +63,6 @@ const EnterInfo: React.FC = () => {
     }
   };
 
-  const isSchoolValid = /[초중고]$/.test(school);
-  const schoolWarning = school && !isSchoolValid ? '학교명 뒤에 초/중/고 를 붙여서 입력해주세요.' : '';
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-xs">
@@ -87,7 +84,6 @@ const EnterInfo: React.FC = () => {
             value={nickname}
             onChange={e => setNickname(e.target.value)}
           />
-          {schoolWarning && <div className="text-red-500 text-center text-sm">{schoolWarning}</div>}
           <Button type="submit" className="w-full !text-black border border-gray-300 bg-white hover:bg-gray-100" style={{color: 'black'}} disabled={!selectedSchool}>시작</Button>
         </form>
         {error && <div className="text-red-500 text-center mt-2">{error}</div>}
