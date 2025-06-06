@@ -38,3 +38,8 @@ export async function getUserInfo(userId: string | null) {
   const res = await fetch(`${API_URL}/user/info/${userId}`);
   return res.json();
 }
+
+export async function validateSchool(name: string) {
+  const res = await fetch(`${API_URL}/school/search?name=${encodeURIComponent(name)}`);
+  return res.json();
+}
