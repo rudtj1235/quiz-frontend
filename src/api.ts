@@ -10,8 +10,9 @@ export async function registerUser(school: string, nickname: string) {
   return res.json();
 }
 
-export async function generateQuiz() {
-  const res = await fetch(`${API_URL}/quiz/generate`);
+export async function generateQuiz(operation?: string) {
+  const op = operation || localStorage.getItem('operation') || 'addition';
+  const res = await fetch(`${API_URL}/quiz/generate?operation=${op}`);
   return res.json();
 }
 
@@ -24,13 +25,15 @@ export async function submitQuiz(userId: string, questions: any[], totalTime: nu
   return res.json();
 }
 
-export async function getRankingAll() {
-  const res = await fetch(`${API_URL}/ranking/all`);
+export async function getRankingAll(operation?: string) {
+  const op = operation || localStorage.getItem('operation') || 'addition';
+  const res = await fetch(`${API_URL}/ranking/all?operation=${op}`);
   return res.json();
 }
 
-export async function getRankingBySchool(school: string) {
-  const res = await fetch(`${API_URL}/ranking/school?school=${encodeURIComponent(school)}`);
+export async function getRankingBySchool(school: string, operation?: string) {
+  const op = operation || localStorage.getItem('operation') || 'addition';
+  const res = await fetch(`${API_URL}/ranking/school?school=${encodeURIComponent(school)}&operation=${op}`);
   return res.json();
 }
 

@@ -45,12 +45,11 @@ const Quiz: React.FC = () => {
 
   useEffect(() => {
     const op = localStorage.getItem('operation') || 'addition';
-    if (op === 'addition') {
-      setQuestions(generateAdditionQuiz());
-    } else {
-      setQuestions(generateMultiplicationQuiz());
-    }
-    setStartTime(Date.now());
+    // 서버에서 operation별 문제 받아오기
+    generateQuiz(op).then(res => {
+      setQuestions(res.questions);
+      setStartTime(Date.now());
+    });
   }, []);
 
   const handleAnswer = () => {
@@ -85,7 +84,7 @@ const Quiz: React.FC = () => {
       <div className="bg-white p-8 rounded shadow-md w-full max-w-xs flex flex-col gap-4 items-center">
         <h2 className="text-2xl font-bold mb-4">문제풀이</h2>
         <div className="mb-2">
-          <b>{current + 1}번 문제:</b> {questions[current].left} + {questions[current].right} = ?
+          <b>{current + 1}번 문제:</b> {questions[current].left} {localStorage.getItem('operation') === 'multiplication' ? '×' : '+'} {questions[current].right} = ?
         </div>
         <Input
           type="number"

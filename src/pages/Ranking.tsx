@@ -49,10 +49,11 @@ const Ranking: React.FC = () => {
   };
 
   useEffect(() => {
+    const op = localStorage.getItem('operation') || 'addition';
     if (filter === 'all') {
-      getRankingAll().then(res => setUsers(res.users));
+      getRankingAll(op).then(res => setUsers(res.users));
     } else if (filter === 'school' && school) {
-      getRankingBySchool(school).then(res => setUsers(res.users));
+      getRankingBySchool(school, op).then(res => setUsers(res.users));
     }
   }, [filter, school, userId]);
 
@@ -140,7 +141,7 @@ const Ranking: React.FC = () => {
                   <td className="px-2 py-1 text-center">{i + 1}</td>
                   <td className="px-2 py-1">{u.school}</td>
                   <td className="px-2 py-1">{u.nickname}{u.ip ? ` (${getIpPrefix(u.ip)})` : ''}</td>
-                  <td className="px-2 py-1 text-center">{u.score}</td>
+                  <td className="px-2 py-1 text-center">{Number(u.score).toFixed(1)}</td>
                   <td className="px-2 py-1 text-center">{(u.time / 1000).toFixed(2)}</td>
                 </tr>
               ))}
@@ -157,7 +158,7 @@ const Ranking: React.FC = () => {
                   <td className="px-2 py-1 text-center">{myRank.rank}</td>
                   <td className="px-2 py-1">{myRank.school}</td>
                   <td className="px-2 py-1">{myRank.nickname}{myRank.ip ? ` (${getIpPrefix(myRank.ip)})` : ''}</td>
-                  <td className="px-2 py-1 text-center">{myRank.score}</td>
+                  <td className="px-2 py-1 text-center">{Number(myRank.score).toFixed(1)}</td>
                   <td className="px-2 py-1 text-center">{(myRank.time / 1000).toFixed(2)}</td>
                 </tr>
               </tbody>
