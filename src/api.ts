@@ -1,4 +1,5 @@
-const API_URL = 'http://localhost:5000/api';
+// .env 파일에 REACT_APP_API_URL=https://quiz-backend-tmna.onrender.com 처럼 설정하세요.
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 export async function registerUser(school: string, nickname: string) {
   const res = await fetch(`${API_URL}/user/register`, {
